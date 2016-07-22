@@ -19,14 +19,24 @@ router.route('/services/:param1/:param2/:param3')
         console.log(docker);
 
             var slackText = '[<'+ docker['repository']['repo_url'] +'|'+ docker['repository']['repo_name'] +'>]'+
-                ' new image build complete,'+
-                ' pushed by '+ docker['push_data']['pusher'];
+                ' new image build complete';
 
             request({
                 uri: salckUrl,
                 method: 'POST',
                 json: {
-                    'text': slackText
+                    // "text": slackText,
+                    "attachments": [
+                        {
+                            "color": "good",
+                            "author_name": docker['push_data']['pusher'],
+                            // "author_link": "https://gravatar.com/avatar/",
+                            "author_icon": "https://gravatar.com/avatar/",
+                            "title": docker['repository']['repo_name'],
+                            "title_link": docker['repository']['repo_url'],
+                            "text": "new image build complete",
+                        }
+                    ]
                 }
             }, function(error, response, result) {
                 console.log(result);
